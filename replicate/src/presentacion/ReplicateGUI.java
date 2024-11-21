@@ -1,11 +1,9 @@
-package presentation;
+package presentacion;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class ReplicateGUI extends JFrame{
-	JFrame frame;
-	JPanel panel;
+
 
 	/**
 	 * 
@@ -22,16 +20,41 @@ public class ReplicateGUI extends JFrame{
 	}
 	
 	private void prepareElements() {
-		// TODO Auto-generated method stub
-		frame = new JFrame();
-		frame.setVisible(true);
-		frame.setSize(800,600);
-		frame.setLocationRelativeTo(null);
-		
-		panel = new JPanel();
+		// TODO Auto-generated method stu
+		this.setVisible(true);
+		this.setSize(800,600);
+		this.setLocationRelativeTo(null);
+
+		JPanel panel = new JPanel();
+
+		this.add(panel);
+
 		panel.setSize(800, 600);
-		
-		
+
+		JMenuBar menuBar = new JMenuBar();
+
+		JMenu archivoMenu = new JMenu("File");
+
+		JMenuItem newItem = new JMenuItem("New");
+		JMenuItem openItem = new JMenuItem("Open");
+		JMenuItem saveItem = new JMenuItem("Save");
+		JMenuItem saveAsItem = new JMenuItem("Save As");
+		JMenuItem importItem = new JMenuItem("Import");
+		JMenuItem exportItem = new JMenuItem("Export");
+		JMenuItem exitItem = new JMenuItem("Exit");
+
+		archivoMenu.add(newItem);
+		archivoMenu.add(openItem);
+		archivoMenu.addSeparator();
+		archivoMenu.add(saveItem);
+		archivoMenu.add(saveAsItem);
+		archivoMenu.addSeparator();
+		archivoMenu.add(importItem);
+		archivoMenu.add(exportItem);
+		archivoMenu.add(exitItem);
+
+		menuBar.add(archivoMenu);
+		this.setJMenuBar(menuBar);
 	}
 
 	private void prepareActions() {
