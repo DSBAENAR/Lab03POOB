@@ -1,13 +1,14 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * La clase TouristCell representa una célula que se mueve dentro de una estructura de manufactura (
  * AManufacturing lattice). Puede cambiar de estado entre activo e inactivo y se mueve hacia el
  * centro o hacia los bordes según su estado.
  */
-public class TouristCell extends Cell {
+public class TouristCell extends Cell implements Serializable{
 
     /**
 	 * 
@@ -120,5 +121,7 @@ public class TouristCell extends Cell {
         row = newRow;
         col = newCol;
     }
+    
+    
 }
 

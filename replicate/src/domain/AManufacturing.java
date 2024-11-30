@@ -187,4 +187,52 @@ public class AManufacturing implements Serializable{
     public AManufacturing getAmanufacturing() {
 		return this;
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(SIZE).append("\n"); // Agregamos el tamaño de la matriz como primera línea
+
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Thing thing = lattice[r][c];
+                if (thing != null) {
+                    sb.append(thing.getClass().getSimpleName()).append(",") // Tipo de celda
+                      .append(r).append(",") // Fila
+                      .append(c).append(",") // Columna
+                      .append(thing.toString()).append("\n"); // Estado específico
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+
+    public static AManufacturing fromString(String data) {
+        String[] lines = data.split("\n");
+        int size = Integer.parseInt(lines[0]); // Primera línea: tamaño de la matriz
+        AManufacturing am = new AManufacturing();
+
+        for (int i = 1; i < lines.length; i++) { // Saltamos la primera línea
+            String[] parts = lines[i].split(",");
+            String className = parts[0];
+            int row = Integer.parseInt(parts[1]);
+            int col = Integer.parseInt(parts[2]);
+
+            // Reconstruir el objeto Thing según su tipo
+            Thing thing;
+            if (className.equals("Cell")) {
+                thing = Cell.fromString(am, row, col, parts[3]); // parts[3]: estado específico
+            } else if (className.equals("TouristCell")) {
+                thing = TouristCell.fromString(am, row, col, parts[3]); // parts[3]: estado específico
+            } else {
+                throw new IllegalArgumentException("Tipo desconocido: " + className);
+            }
+
+            am.setThing(row, col, thing);
+        }
+
+        return am;
+    }
+
 }

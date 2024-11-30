@@ -46,6 +46,7 @@ public class Cell extends Artefact implements Thing,  Serializable{
         AManufacturing.setThing(row, column, (Thing) this);
         color = (state == Artefact.ACTIVE) ? Color.BLACK : Color.BLUE;
     }
+    
 
     /**
      * Devuelve la fila de la célula.
@@ -137,5 +138,15 @@ public class Cell extends Artefact implements Thing,  Serializable{
      */
     public boolean neighborIsEmpty(int dr, int dc) {
         return AManufacturing.isEmpty(row + dr, column + dc);
+    }
+    
+    @Override
+    public String toString() {
+        return isActive() ? "active" : "inactive"; // Representamos solo el estado
+    }
+
+    public static Cell fromString(AManufacturing am, int row, int col, String state) {
+        boolean isActive = state.equals("active");
+        return new Cell(am, row, col, isActive);
     }
 }

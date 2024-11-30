@@ -1,8 +1,9 @@
 package domain;
 import java.awt.Color;
+import java.io.Serializable;
 
 
-public abstract class Artefact{
+public abstract class Artefact implements Serializable{
 
     public final static char UNKNOWN='u';
     public final static char ACTIVE='a';

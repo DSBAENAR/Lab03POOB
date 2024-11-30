@@ -62,6 +62,12 @@ public class AManufacturingGUI extends JFrame{
         return aManufacturing;
     }
 
+	public void setAm(AManufacturing loadedAm) {
+		// TODO Auto-generated method stub
+		this.aManufacturing = loadedAm;
+		
+	}
+
 }
 
 class PhotoAManufacturing extends JPanel{

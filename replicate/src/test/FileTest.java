@@ -7,51 +7,58 @@ import presentation.ReplicateGUI;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileTest {
 
-    @Test
-    public void testSaveAndOpen() throws ReplicateException {
-    	// Crear instancia de ReplicateGUI
-        ReplicateGUI gui = new ReplicateGUI();
-        gui.optionNew(); // Inicializa el objeto AManufacturing
-        AManufacturing originalData = gui.getAm(); // Obtener la instancia inicial
 
-        // Crear un archivo temporal para pruebas
-        File tempFile = new File("test_data.dat");
+	@Test
+	void testOptionSaveAndOpen() throws ReplicateException, IOException {
+	    ReplicateGUI gui = new ReplicateGUI();
+	    AManufacturing originalAm = new AManufacturing();
+	    gui.setAm(originalAm);
 
-        // Simular guardar el estado
-        JFileChooser saveChooser = new JFileChooser() {
-            private static final long serialVersionUID = 1L;
+	    // Archivo temporal para la prueba
+	    File tempFile = File.createTempFile("test_am", ".dat");
+	    tempFile.deleteOnExit();
 
-            @Override
-            public File getSelectedFile() {
-                return tempFile;
-            }
-        };
-        gui.optionSave(saveChooser);
+	    // Simular JFileChooser para guardar
+	    JFileChooser mockSaveFile = new JFileChooser() {
+	        @Override
+	        public File getSelectedFile() {
+	            return tempFile;
+	        }
 
+	        @Override
+	        public int showSaveDialog(java.awt.Component parent) {
+	            return JFileChooser.APPROVE_OPTION;
+	        }
+	    };
 
-        // Simular abrir el archivo guardado
-        JFileChooser openChooser = new JFileChooser() {
-            private static final long serialVersionUID = 1L;
+	    // Simular JFileChooser para abrir
+	    JFileChooser mockOpenFile = new JFileChooser() {
+	        @Override
+	        public File getSelectedFile() {
+	            return tempFile;
+	        }
 
-            @Override
-            public File getSelectedFile() {
-                return tempFile;
-            }
-        };
-        gui.optionOpen(openChooser);
+	        @Override
+	        public int showOpenDialog(java.awt.Component parent) {
+	            return JFileChooser.APPROVE_OPTION;
+	        }
+	    };
 
-        // Verificar que el estado cargado sea igual al original
-        AManufacturing loadedData = gui.getAm();
-        assertNotNull(loadedData, "El estado cargado es nulo.");
-        assertEquals(originalData, loadedData, "El estado cargado no coincide con el original.");
+	    // Guardar y luego abrir el archivo
+	    gui.optionSave(mockSaveFile);
+	    gui.optionOpen(mockOpenFile);
 
-        // Eliminar archivo temporal después de la prueba
-        tempFile.delete();
-    }
+	    // Comparar objetos
+	    AManufacturing loadedAm = gui.getAm();
+	    assertNotNull(loadedAm, "El objeto cargado no debe ser null");
+	    assertEquals(originalAm.toString(), loadedAm.toString(), "El objeto cargado debe ser igual al guardado");
+	}
+
         
 }
