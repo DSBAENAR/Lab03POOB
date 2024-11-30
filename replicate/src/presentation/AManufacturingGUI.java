@@ -19,11 +19,12 @@ public class AManufacturingGUI extends JFrame{
     public final int SIZE;
     private JButton ticTacButton;
     private JPanel  controlPanel;
-    private PhotoAManufacturing photo;
+    PhotoAManufacturing photo;
     protected AManufacturing aManufacturing;
 
 
-    AManufacturingGUI() {
+    AManufacturingGUI(AManufacturing aManufacturing) {
+    	this.aManufacturing = aManufacturing;
         aManufacturing=new AManufacturing();
         SIZE=aManufacturing.getSize();
         prepareElements();
@@ -66,6 +67,19 @@ public class AManufacturingGUI extends JFrame{
 		// TODO Auto-generated method stub
 		this.aManufacturing = loadedAm;
 		
+	}
+
+	public void updateAmanufacturing() {
+		// TODO Auto-generated method stub
+		 // Sincronizar cambios recientes desde la GUI al objeto `aManufacturing`
+	    for (int r = 0; r < aManufacturing.getSize(); r++) {
+	        for (int c = 0; c < aManufacturing.getSize(); c++) {
+	            // Obtener estado visual y actualizar el modelo
+	        	// obtener el estado visual desde la GUI
+	            Thing thing  = aManufacturing.getThing(r, c);
+	            aManufacturing.setThing(r, c, thing);
+	        }
+	    }
 	}
 
 }

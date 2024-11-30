@@ -191,7 +191,6 @@ public class AManufacturing implements Serializable{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(SIZE).append("\n"); // Agregamos el tamaño de la matriz como primera línea
 
         for (int r = 0; r < SIZE; r++) {
             for (int c = 0; c < SIZE; c++) {
@@ -200,7 +199,7 @@ public class AManufacturing implements Serializable{
                     sb.append(thing.getClass().getSimpleName()).append(",") // Tipo de celda
                       .append(r).append(",") // Fila
                       .append(c).append(",") // Columna
-                      .append(thing.toString()).append("\n"); // Estado específico
+                      .append("\n"); // Estado específico
                 }
             }
         }

@@ -1,19 +1,16 @@
 package test;
-
 import domain.AManufacturing;
 import domain.ReplicateException;
 import org.junit.jupiter.api.Test;
 import presentation.ReplicateGUI;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class FileTest {
-
-
+	
 	@Test
 	void testOptionSaveAndOpen() throws ReplicateException, IOException {
 	    ReplicateGUI gui = new ReplicateGUI();
@@ -59,6 +56,4 @@ public class FileTest {
 	    assertNotNull(loadedAm, "El objeto cargado no debe ser null");
 	    assertEquals(originalAm.toString(), loadedAm.toString(), "El objeto cargado debe ser igual al guardado");
 	}
-
-        
 }

@@ -164,11 +164,15 @@ public class ReplicateGUI extends JFrame implements Serializable {
 	}
 	
 	public void optionNew() {
-		setAm(new AManufacturing()); // Inicializar la instancia de am
-		amanufacturingGUI = new AManufacturingGUI();
-		amanufacturingGUI.setVisible(true);
-		
+	    if (amanufacturingGUI != null) {
+	        amanufacturingGUI.dispose(); // Cierra la ventana anterior
+	    }
+
+	    setAm(new AManufacturing()); // Inicializar la instancia de `am`
+	    amanufacturingGUI = new AManufacturingGUI(am);
+	    amanufacturingGUI.setVisible(true);
 	}
+
 	
 	private void optionExit() {
 		System.exit(0);
@@ -185,16 +189,18 @@ public class ReplicateGUI extends JFrame implements Serializable {
 	        File selectedFile = file.getSelectedFile();
 
 	        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(selectedFile))) {
-	            // Deserializar el objeto AManufacturing
 	            AManufacturing loadedAm = (AManufacturing) ois.readObject();
-	            setAm(loadedAm); // Reemplazar el objeto actual con el cargado
+	            setAm(loadedAm);
 
-	            // Mostrar la interfaz de AManufacturing
 	            if (amanufacturingGUI == null) {
-	                amanufacturingGUI = new AManufacturingGUI();
+	                amanufacturingGUI = new AManufacturingGUI(am);
 	            }
-	            amanufacturingGUI.setAm(loadedAm); // Pasar el objeto cargado
-	            amanufacturingGUI.setVisible(true); // Hacer visible la interfaz
+	            amanufacturingGUI.setAm(loadedAm);
+
+	            // Asegura que `PhotoAManufacturing` se actualice antes de repintar
+	            amanufacturingGUI.photo.repaint();
+
+	            amanufacturingGUI.setVisible(true);
 
 	            JOptionPane.showMessageDialog(this, "Estado cargado exitosamente desde: " + selectedFile.getAbsolutePath());
 	        } catch (Exception ex) {
@@ -208,6 +214,10 @@ public class ReplicateGUI extends JFrame implements Serializable {
 
 	
 	public void optionSave(JFileChooser file) throws ReplicateException {
+	    if (amanufacturingGUI != null) {
+	        amanufacturingGUI.updateAmanufacturing(); // Actualizar `aManufacturing` con los últimos cambios
+	    }
+
 	    file = new JFileChooser();
 	    file.setDialogTitle("Guardar estado de Replicate");
 	    file.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos DAT", "dat"));
@@ -221,8 +231,7 @@ public class ReplicateGUI extends JFrame implements Serializable {
 	        }
 
 	        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileToSave))) {
-	            // Serializar el objeto AManufacturing
-	            oos.writeObject(am);
+	            oos.writeObject(am); // Guardar el estado actualizado
 	            JOptionPane.showMessageDialog(this, "Estado guardado exitosamente en: " + fileToSave.getAbsolutePath());
 	        } catch (Exception ex) {
 	            throw new ReplicateException("Error al guardar el estado: " + ex.getMessage());
@@ -234,12 +243,54 @@ public class ReplicateGUI extends JFrame implements Serializable {
 
 	
 	private void optionImport(JFileChooser file) throws ReplicateException{
-		
+		file = new JFileChooser();
+	    file.setDialogTitle("Abrir estado de Replicate");
+	    file.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos TXT", "txt"));
+
+	    int userSelection = file.showOpenDialog(this);
+
+	    if (userSelection == JFileChooser.APPROVE_OPTION) {
+	        File selectedFile = file.getSelectedFile();
+
+	        try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+	            // Leer el estado del archivo y reconstruir el objeto
+	            String fileContent = reader.readLine();
+	            // Aquí puedes usar lógica adicional para interpretar fileContent y reconstruir el objeto AManufacturing
+	            setAm(AManufacturing.fromString(fileContent)); // AManufacturing necesita un método estático fromString
+	            JOptionPane.showMessageDialog(this, "Estado cargado exitosamente desde: " + selectedFile.getAbsolutePath());
+	        } catch (Exception ex) {
+	            throw new ReplicateException("Error al cargar el estado: " + ex.getMessage());
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Operación cancelada por el usuario.");
+	    }
 	}
 	
 	private void optionExport(JFileChooser file) throws ReplicateException{
-		
+		file = new JFileChooser();
+	    file.setDialogTitle("Guardar estado de Replicate");
+	    file.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos TXT", "txt"));
+
+	    int userSelection = file.showSaveDialog(this);
+
+	    if (userSelection == JFileChooser.APPROVE_OPTION) {
+	        File fileToSave = file.getSelectedFile();
+	        if (!fileToSave.getAbsolutePath().endsWith(".txt")) {
+	            fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");
+	        }
+
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+	            // Escribir estado del objeto como texto (JSON, CSV, etc.)
+	            writer.write(am.toString()); // Asegúrate de que AManufacturing tenga un método toString apropiado
+	            JOptionPane.showMessageDialog(this, "Estado guardado exitosamente en: " + fileToSave.getAbsolutePath());
+	        } catch (Exception ex) {
+	            throw new ReplicateException("Error al guardar el estado: " + ex.getMessage());
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Operación cancelada por el usuario.");
+	    }
 	}
+
 
 	public AManufacturing getAm() {
 		return am;
