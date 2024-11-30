@@ -1,5 +1,6 @@
-package dominio;
+package domain;
 import java.util.*;
+import java.io.Serializable;
 import java.lang.Class;
 import java.lang.reflect.Constructor;
 
@@ -8,9 +9,14 @@ import java.lang.reflect.Constructor;
  * Contiene lógica para agregar elementos, calcular vecinos activos, y gestionar el estado de cada célula
  * en base a las reglas del Juego de la Vida.
  */
-public class AManufacturing {
+public class AManufacturing implements Serializable{
 
-    /** Tamaño de la estructura de células. */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** Tamaño de la estructura de células. */
     static private int SIZE = 50;
 
     /** Matriz de células (o artefactos) en la estructura de manufactura. */
@@ -176,5 +182,9 @@ public class AManufacturing {
             int c = pos[1];
             new Cell(this, r, c, true); // Crear una nueva célula activa
         }
+    }
+    
+    public AManufacturing getAmanufacturing() {
+		return this;
     }
 }

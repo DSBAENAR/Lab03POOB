@@ -1,4 +1,4 @@
-package dominio;
+package domain;
 
 import java.awt.Color;
 
@@ -9,7 +9,12 @@ import java.awt.Color;
  */
 public class TouristCell extends Cell {
 
-    /** Indica si la célula está activa o no. */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** Indica si la célula está activa o no. */
     private boolean active;
 
     /** Fila actual de la célula. */

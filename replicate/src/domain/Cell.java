@@ -1,6 +1,7 @@
-package dominio;
+package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * La clase Cell representa una célula en la estructura de manufactura (AManufacturing).
@@ -9,9 +10,14 @@ import java.awt.Color;
  * <br>
  * <b>(aManufactuing, fila, columna, edad, estado, próximo estado, color)</b><br>
  */
-public class Cell extends Artefact implements Thing {
+public class Cell extends Artefact implements Thing,  Serializable{
 
-    /** Estado siguiente de la célula. */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** Estado siguiente de la célula. */
     protected char nextState;
 
     /** Color de la célula. */

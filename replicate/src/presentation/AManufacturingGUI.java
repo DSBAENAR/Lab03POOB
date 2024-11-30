@@ -1,14 +1,20 @@
 
-package presentacion;
-import dominio.*;
-
+package presentation;
 import javax.swing.*;
+
+import domain.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
 public class AManufacturingGUI extends JFrame{
-    public static final int SIDE=11;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static final int SIDE=11;
 
     public final int SIZE;
     private JButton ticTacButton;
@@ -17,7 +23,7 @@ public class AManufacturingGUI extends JFrame{
     protected AManufacturing aManufacturing;
 
 
-    private AManufacturingGUI() {
+    AManufacturingGUI() {
         aManufacturing=new AManufacturing();
         SIZE=aManufacturing.getSize();
         prepareElements();
@@ -56,14 +62,14 @@ public class AManufacturingGUI extends JFrame{
         return aManufacturing;
     }
 
-    public static void main(String[] args) {
-        AManufacturingGUI ca=new AManufacturingGUI();
-        ca.setVisible(true);
-    }
 }
 
 class PhotoAManufacturing extends JPanel{
-    private AManufacturingGUI gui;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private AManufacturingGUI gui;
 
     public PhotoAManufacturing(AManufacturingGUI gui) {
         this.gui=gui;
