@@ -198,7 +198,7 @@ public class AManufacturing implements Serializable{
                 if (thing != null) {
                     sb.append(thing.getClass().getSimpleName()).append(",") // Tipo de celda
                       .append(r).append(",") // Fila
-                      .append(c).append(",") // Columna
+                      .append(c) // Columna
                       .append("\n"); // Estado específico
                 }
             }
@@ -208,30 +208,40 @@ public class AManufacturing implements Serializable{
 
 
     public static AManufacturing fromString(String data) {
-        String[] lines = data.split("\n");
-        int size = Integer.parseInt(lines[0]); // Primera línea: tamaño de la matriz
         AManufacturing am = new AManufacturing();
+        String[] lines = data.split("\n");
 
-        for (int i = 1; i < lines.length; i++) { // Saltamos la primera línea
-            String[] parts = lines[i].split(",");
-            String className = parts[0];
-            int row = Integer.parseInt(parts[1]);
-            int col = Integer.parseInt(parts[2]);
+        for (String line : lines) {
+            if (!line.trim().isEmpty()) {
+                String[] parts = line.split(",");
 
-            // Reconstruir el objeto Thing según su tipo
-            Thing thing;
-            if (className.equals("Cell")) {
-                thing = Cell.fromString(am, row, col, parts[3]); // parts[3]: estado específico
-            } else if (className.equals("TouristCell")) {
-                thing = TouristCell.fromString(am, row, col, parts[3]); // parts[3]: estado específico
-            } else {
-                throw new IllegalArgumentException("Tipo desconocido: " + className);
+                // Validar que la línea tenga al menos 3 partes (tipo, fila, columna)
+                if (parts.length < 3) {
+                    throw new IllegalArgumentException("Formato de línea inválido: " + line);
+                }
+
+                String type = parts[0];
+                int row = Integer.parseInt(parts[1].trim());
+                int col = Integer.parseInt(parts[2].trim());
+
+                // Determinar el estado activo/inactivo; predeterminado a `inactive` si falta
+                boolean isActive = parts.length > 3 && parts[3].trim().equalsIgnoreCase("active");
+
+                // Crear el objeto correspondiente
+                if (type.equals("Cell")) {
+                    new Cell(am, row, col, isActive);
+                } 
+                else if (type.equals("TouristCell")) {
+                    new Cell(am, row, col, isActive);
+                }
+                else {
+                    throw new IllegalArgumentException("Tipo desconocido: " + type);
+                }
             }
-
-            am.setThing(row, col, thing);
         }
 
         return am;
     }
+
 
 }

@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -242,31 +243,56 @@ public class ReplicateGUI extends JFrame implements Serializable {
 	}
 
 	
-	private void optionImport(JFileChooser file) throws ReplicateException{
-		file = new JFileChooser();
+	public void optionImport(JFileChooser file) throws ReplicateException {
+	    // Configurar el JFileChooser
+	    file = new JFileChooser();
 	    file.setDialogTitle("Abrir estado de Replicate");
 	    file.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos TXT", "txt"));
 
+	    // Mostrar el diálogo para seleccionar un archivo
 	    int userSelection = file.showOpenDialog(this);
 
 	    if (userSelection == JFileChooser.APPROVE_OPTION) {
 	        File selectedFile = file.getSelectedFile();
 
 	        try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-	            // Leer el estado del archivo y reconstruir el objeto
-	            String fileContent = reader.readLine();
-	            // Aquí puedes usar lógica adicional para interpretar fileContent y reconstruir el objeto AManufacturing
-	            setAm(AManufacturing.fromString(fileContent)); // AManufacturing necesita un método estático fromString
+	            // Leer el contenido del archivo completo
+	            StringBuilder fileContent = new StringBuilder();
+	            String line;
+	            while ((line = reader.readLine()) != null) {
+	                fileContent.append(line).append("\n"); // Preservar los saltos de línea
+	            }
+	            
+	            // Validar que el archivo no esté vacío
+	            if (fileContent.toString().trim().isEmpty()) {
+	                throw new ReplicateException("El archivo está vacío.");
+	            }
+
+	            // Reconstruir el objeto AManufacturing desde el contenido
+	            setAm(AManufacturing.fromString(fileContent.toString())); // Método estático fromString debe estar implementado
+
+	            // Actualizar la GUI si está activa
+	            if (amanufacturingGUI != null) {
+	                amanufacturingGUI.setAm(getAm());
+	            }
+
+	            // Mostrar mensaje de éxito
 	            JOptionPane.showMessageDialog(this, "Estado cargado exitosamente desde: " + selectedFile.getAbsolutePath());
-	        } catch (Exception ex) {
-	            throw new ReplicateException("Error al cargar el estado: " + ex.getMessage());
+	        } catch (IOException ex) {
+	            // Manejo de errores de lectura/escritura
+	        	JOptionPane.showMessageDialog(this, "El sistema no puede encontrar el archivo especificado" + " " + selectedFile.getAbsolutePath() );
+	        } catch (IllegalArgumentException ex) {
+	            // Manejo de errores de formato del archivo
+	            throw new ReplicateException("Formato de archivo no válido: " + ex.getMessage());
 	        }
 	    } else {
+	        // Mostrar mensaje si el usuario cancela la operación
 	        JOptionPane.showMessageDialog(this, "Operación cancelada por el usuario.");
 	    }
 	}
+
 	
-	private void optionExport(JFileChooser file) throws ReplicateException{
+	public void optionExport(JFileChooser file) throws ReplicateException{
 		file = new JFileChooser();
 	    file.setDialogTitle("Guardar estado de Replicate");
 	    file.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos TXT", "txt"));
@@ -290,7 +316,8 @@ public class ReplicateGUI extends JFrame implements Serializable {
 	        JOptionPane.showMessageDialog(this, "Operación cancelada por el usuario.");
 	    }
 	}
-
+	
+	
 
 	public AManufacturing getAm() {
 		return am;
